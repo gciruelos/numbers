@@ -3,7 +3,7 @@
 This is a very simple script that converts numbers to words. It relies on
 a recursive method, which I think is the most suitable to do this.
 
-Right now it supports English, French and Spanish
+Right now it supports English, French, Spanish and Swedish.
 
 Please feel free to contribute, adding a language or fixing bugs, creating
 a pull request.
@@ -579,8 +579,9 @@ while 1:
 	what = input('> ')
 
 	a = Number(what, 4)
+	
 	print a.wordSpanish()
 	print a.wordEnglish()
 	print a.wordFrench()
-	print a.wordRoman()
 	print a.wordSwedish()
+	print a.wordRoman()
