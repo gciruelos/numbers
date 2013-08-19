@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 This is the English vocabulary used in the script to generate the words.
 

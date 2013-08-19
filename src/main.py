@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 This is a very simple script that converts numbers to words. It relies on
 a recursive method, which I think is the most suitable to do this.
@@ -10,7 +11,6 @@ a pull request.
 Author: Gonzalo Ciruelos <comp.gonzalo@gmail.com>
 License: MIT
 '''
-
 
 
 def decompose(number, significant_figures):
@@ -49,6 +49,24 @@ class Number():
 	def __str__(self):
 		return str(self.num)+'\t'+str(self.decomposed)
 	
+	
+	def wordRoman(self):
+		ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
+		nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
+		result = ''
+		
+		n = int(self.num)
+		
+		if n >= 4000:
+			return 'Roman: number is too big'
+		
+		for i in range(len(ints)):
+			count = int(n/ints[i])
+			result += nums[i] * count
+			n -= ints[i] * count
+
+		return result
+			
 	
 	def wordSpanish(self):
 		import spanish as spa
@@ -300,7 +318,7 @@ class Number():
 		if self.sign == 1:
 			return ' '.join(words)
 		else:
-			return 'menos '+' '.join(words)
+			return 'minus '+' '.join(words)
 		
 		
 	def wordFrench(self):
@@ -315,7 +333,7 @@ class Number():
 				 'T': 0}
 		
 		if self.num == 0:
-			return 'cero'
+			return 'zéro'
 		
 		numeral = self.decomposed
 		
@@ -343,14 +361,16 @@ class Number():
 					words.append(fr.order20[numeral[index]*10+numeral[index+1]])
 				elif 69<last_two<80 or 89<last_two<100:
 					if numeral[index+1] == 0:
-						words.append(fr.order2[numeral[index]])
+						words.append(fr.order2[numeral[index]]+'-dix')
 					elif numeral[index+1] == 1:
 						words.append(fr.order2[numeral[index]])
 						words.append('et un')
 					else:
 						words.append(fr.order2[numeral[index]]+'-'+fr.order20[numeral[index+1]+10])
 				else:
-					if numeral[index+1]==1:
+					if numeral[index+1]==0:
+						words.append(fr.order2[numeral[index]])
+					elif numeral[index+1]==1:
 						words.append(fr.order2[numeral[index]])
 						words.append('et un')
 					else:
@@ -439,8 +459,120 @@ class Number():
 			return ' '.join(words)
 		else:
 			return 'menos '+' '.join(words)
-			
 
+			
+	def wordSwedish(self):
+		import swedish as swe
+		
+		words = []
+		
+		flags = {'u': 0,
+				 'd': 0,
+				 'k': 0,
+				 'M': 0,
+				 'B': 0,
+				 'T': 0}
+		
+		if self.num == 0:
+			return 'noll'
+		
+		numeral = self.decomposed
+		
+		if self.significant_figures == 0:
+			end = self.length
+		else:
+			end = self.length-1
+			
+		iterable = range(0, end)
+		
+		for index in iterable:
+			
+			order = end - index
+			
+			if numeral[index]==0:
+				continue
+
+			if order == 1:
+				if flags['u']: continue
+				words.append(swe.order1[numeral[index]])
+			elif order == 2:
+				if flags['d']: continue
+				if numeral[index]*10+numeral[index+1]<=20:
+					words.append(swe.order20[numeral[index]*10+numeral[index+1]])
+				else:
+					if numeral[index+1]:
+						words.append(swe.order2[numeral[index]]+swe.order1[numeral[index+1]])
+					else:
+						words.append(swe.order2[numeral[index]])
+				flags['u'] = 1
+			elif order == 3:
+				last_two = numeral[index+1]*10+numeral[index+2]
+				if last_two == 0:
+					words.append(swe.order1[numeral[index]]+'hundra')
+				else:
+					words.append(swe.order1[numeral[index]]+'hundra'+Number(last_two).wordSwedish())
+				flags['d'] = flags['u'] = 1
+			
+			elif order >= 4 and order <= 6:
+				if flags['k']: continue
+					
+				num = int(''.join(map(str, numeral[index:index+(order-3)])))
+				
+				words.append(Number(num, 0).wordSwedish()+'tusen')
+				flags['k'] = 1
+			
+			elif order >= 7 and order <= 9:
+				if flags['M']: continue
+
+				num = int(''.join(map(str, numeral[index:index+(order-6)])))
+
+				words.append(Number(num, 0).wordSwedish())
+				words.append('miljon')
+				flags['M'] = 1
+			
+			elif order >= 10 and order <= 12:
+				if flags['B']: continue
+
+				num = int(''.join(map(str, numeral[index:index+(order-9)])))
+
+				words.append(Number(num, 0).wordSwedish())
+				words.append('miljard')
+				flags['B'] = 1
+			
+			elif order >= 13 and order <= 15:
+				if flags['T']: continue
+
+				num = int(''.join(map(str, numeral[index:index+(order-12)])))
+				
+				words.append(Number(num, 0).wordSwedish())
+				words.append('trillion')
+				flags['T'] = 1
+
+
+			else:
+				return 'infinity'
+				#words.append('error')
+				
+						
+		if self.significant_figures:
+			words.append('point')
+		
+			if self.significant_figures == 1:
+				words.append(eng.order1[self.decomposed[-1]])
+			
+			elif self.significant_figures == 2:
+				words.append(Number(self.decomposed[-1], 0).wordSwedish())
+			
+			else:
+				for i in str(self.decomposed[-1]):
+					words.append(swe.order1[int(i)])
+
+		#print words
+		if self.sign == 1:
+			return ' '.join(words)
+		else:
+			return 'menos '+' '.join(words)
+		
 
 
 while 1:
@@ -450,3 +582,5 @@ while 1:
 	print a.wordSpanish()
 	print a.wordEnglish()
 	print a.wordFrench()
+	print a.wordRoman()
+	print a.wordSwedish()

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 This is the Spanish vocabulary used in the script to generate the words.
 
@@ -33,7 +34,7 @@ order20 = {10: 'diez',
 		   13: 'trece',
 		   14: 'catorce',
 		   15: 'quince',
-		   16: 'dieciseis',
+		   16: 'dieciséis',
 		   17: 'diecisiete',
 		   18: 'dieciocho',
 		   19: 'diecinueve',
