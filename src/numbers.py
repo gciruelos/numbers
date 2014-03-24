@@ -8,7 +8,7 @@ Right now it supports English, French, Spanish and Swedish.
 Please feel free to contribute, adding a language or fixing bugs, creating
 a pull request.
 
-Author: Gonzalo Ciruelos <comp.gonzalo@gmail.com>
+Author: Gonzalo Ciruelos <gonzalo.ciruelos@gmail.com>
 License: MIT
 '''
 
@@ -189,7 +189,9 @@ class Number():
 			else:
 				return 'infinito'
 				#words.append('error')
-				
+		
+		if int(self.num)==0:
+			words.append('cero')
 		
 		if self.significant_figures:
 			words.append('coma')
@@ -438,11 +440,13 @@ class Number():
 
 			else:
 				return 'infinite'
-				#words.append('error')
 				
+		if int(self.num)==0:
+			words.append('zéro')
+			
 		
 		if self.significant_figures:
-			words.append('vergule')
+			words.append('virgule')
 		
 			if self.significant_figures == 1:
 				words.append(fr.order1[self.decomposed[-1]])
@@ -454,7 +458,7 @@ class Number():
 				for i in str(self.decomposed[-1]):
 					words.append(fr.order1[int(i)])
 
-		#print words
+
 		if self.sign == 1:
 			return ' '.join(words)
 		else:
@@ -552,13 +556,15 @@ class Number():
 			else:
 				return 'infinity'
 				#words.append('error')
-				
+		
+		if int(self.num)==0:
+			words.append('noll')	
 						
 		if self.significant_figures:
-			words.append('point')
+			words.append('komma')
 		
 			if self.significant_figures == 1:
-				words.append(eng.order1[self.decomposed[-1]])
+				words.append(swe.order1[self.decomposed[-1]])
 			
 			elif self.significant_figures == 2:
 				words.append(Number(self.decomposed[-1], 0).wordSwedish())
@@ -575,13 +581,13 @@ class Number():
 		
 
 
-while 1:
-	what = input('> ')
+if __name__ == '__main__':
+	while 1:
+		what = input('> ')
 
-	a = Number(what, 4)
-	
-	print a.wordSpanish()
-	print a.wordEnglish()
-	print a.wordFrench()
-	print a.wordSwedish()
-	print a.wordRoman()
+		a = Number(what)
+		print a.wordSpanish()
+		print a.wordEnglish()
+		print a.wordFrench()
+		print a.wordSwedish()
+		print a.wordRoman()

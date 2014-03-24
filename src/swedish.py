@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
 This is the Swedish vocabulary used in the script to generate the words.
-
-Author: Gonzalo Ciruelos <comp.gonzalo@gmail.com>
-License: MIT
 '''
 
 
